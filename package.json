@@ -1,0 +1,22 @@
+{
+  "name": "tv-show-dom-project",
+  "version": "0.1.0-SNAPSHOT",
+  "description": "Jack TV Show DOM Project",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jackhclee/tv-show-dom-project.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jackhclee/tv-show-dom-project/issues"
+  },
+  "homepage": "https://github.com/jackhclee/tv-show-dom-project#readme",
+  "dependencies": {
+    "cypress": "^9.5.0"
+  }
+}
