@@ -16,7 +16,7 @@ https://github.com/CodeYourFuture/tv-show-dom-project-solution
 
 |  Task    |Est. Start|  Est.End |Act. Start| Act. End | Status | Remarks  |
 |----------|----------|----------|----------|----------|--------|----------|
-|  Setup   |2022-02-20|2022-02-26|2022-02-20| TBC      | Status |          |
-|  Lvl 100 |2022-02-20|2022-02-26|2022-02-20| TBC      | Status |          |
-|  Lvl 200 |2022-02-20|2022-02-26|2022-02-20| TBC      | Status |          |
+|  Setup   |2022-02-20|2022-02-26|2022-02-20| TBC      | Started|          |
+|  Lvl 100 |2022-02-20|2022-02-26|2022-02-20| TBC      | Started|          |
+|  Lvl 200 |2022-02-20|2022-02-26|2022-02-20| TBC      | Started|          |
 
