@@ -33,7 +33,7 @@ This project adopts [Cypress](https://cypress.io) testing framework for all test
 1. Start the index.html by using the Live Server extension's Go Live function.
 
 2. Open Terminal, start Cypress test by running
-```./node_module/cypress/bin/cypress open```
+```./node_modules/cypress/bin/cypress open```
 
 1. (Optional) If the Cypress test cannot connect to the hosted index.html. Edit `/cypress/integration/lvl_100_spec.js` change the port number (e.g. 5502) to the port used by Live Server.
 
