@@ -4,7 +4,8 @@
   "description": "Jack TV Show DOM Project",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "coverage": "coverage report *.js"
   },
   "repository": {
     "type": "git",
@@ -17,6 +18,10 @@
   },
   "homepage": "https://github.com/jackhclee/tv-show-dom-project#readme",
   "dependencies": {
+    "coverage": "^0.4.1",
     "cypress": "^9.5.0"
+  },
+  "devDependencies": {
+    "eslint": "^8.9.0"
   }
 }

@@ -1,0 +1,12 @@
+{
+    "liveServer.settings.port": 5503,
+    "typescript.validate.enable": true,
+    "javascript.validate.enable": true,
+    "cSpell.words": [
+        "eqeqeq",
+        "Ionicons"
+    ],
+    "eslint.enable": true,
+    "eslint.alwaysShowStatus": true,
+    "eslint.format.enable": true
+}
