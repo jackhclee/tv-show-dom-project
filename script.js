@@ -37,7 +37,7 @@ function makeSearchPanel() {
   let searchPanelDivElm = document.createElement('div');
   let searchInputElm = document.createElement('input');
 
-  searchInputElm.addEventListener('onchange', (evt)=> {
+  searchInputElm.addEventListener('change', (evt)=> {
     let searchWord = evt.target.value.toLocaleLowerCase.trim();
     let matchedEpisodes = getAllGOTEpisodes().filter(
       episode => 
