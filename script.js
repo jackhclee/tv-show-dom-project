@@ -30,10 +30,10 @@ function makeEpisodeParaElm(episode) {
   let episodeNumberSpanElm = document.createElement('span');
   episodeNumberSpanElm.innerHTML = formatEpisodeCode(episode.season, episode.number)
 
-  let titleSpanElm = document.createElement('img');
+  let titleSpanElm = document.createElement('span');
   titleSpanElm.innerHTML = episode.name;
 
-  let episodeImgElm = document.createElement('span');
+  let episodeImgElm = document.createElement('img');
   episodeImgElm.src = episode.image.medium;
 
   let synopsisElm = document.createElement('span');
