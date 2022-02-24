@@ -1,22 +1,28 @@
 //You can edit ALL of the code here
+
+let matchedEpisodes = getAllGOTEpisodes();
+
 function setup() {
-  // const allEpisodes = getAllEpisodes();
-  const allEpisodes = getAllGOTEpisodes();
-  makePageForEpisodes(allEpisodes);
 
   const rootElem = document.getElementById("root");
 
   rootElem.appendChild(makeSearchPanel());
 
-  for (let episode of getAllEpisodes()) {
-    rootElem.append(makeEpisodeParaElm(episode))
+  const searchResultPanelElm = document.createElement('div');
+  searchResultPanelElm.setAttribute('id','searchPanel')
+
+  rootElem.appendChild(searchResultPanelElm);
+  makeSearchResultPanel(searchResultPanelElm, matchedEpisodes);
+  
+}
+
+function makeSearchResultPanel(searchResultPanelElm, episodes) {
+  for (let episode of episodes) {
+    searchResultPanelElm.append(makeEpisodeParaElm(episode));
   }
 }
 
-function makePageForEpisodes(episodeList) {
-  const rootElem = document.getElementById("root");
-  rootElem.textContent = `Got ${episodeList.length} episode(s)`;
-}
+
 
 function getEpisodeInfo(episodeNo) {
   const episodeInfoElem = document.getElementById("episodeInfo");
@@ -30,6 +36,19 @@ function formatEpisodeCode(seasonNbr, episodeNbr) {
 function makeSearchPanel() {
   let searchPanelDivElm = document.createElement('div');
   let searchInputElm = document.createElement('input');
+
+  searchInputElm.addEventListener('onchange', (evt)=> {
+    let searchWord = evt.target.value.toLocaleLowerCase.trim();
+    let matchedEpisodes = getAllGOTEpisodes().filter(
+      episode => 
+      (episode.name.toLocaleLowerCase.indexOf(searchWord) >=0 ||
+      episode.summary.toLocaleLowerCase.indexOf(searchWord) >=0)
+      
+      )
+    
+    evt.target.value = '';
+  })
+
   let allGOTEpisodes = getAllGOTEpisodes();
   let SearchResultSpan = makeSearchResultSpan(allGOTEpisodes.length, allGOTEpisodes.length);
   
