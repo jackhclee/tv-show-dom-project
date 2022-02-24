@@ -6,7 +6,7 @@ function setup() {
 
   const rootElem = document.getElementById("root");
 
-  for (let episode in allEpisodes) {
+  for (let episode in allEpisodes()) {
     rootElem.append(makeEpisodeParaElm(episode))
   }
 }
