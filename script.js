@@ -4,9 +4,9 @@ function setup() {
   const allEpisodes = getAllGOTEpisodes();
   makePageForEpisodes(allEpisodes);
 
-  makeSearchPanel();
-  
   const rootElem = document.getElementById("root");
+
+  rootElem.appendChild(makeSearchPanel());
 
   for (let episode of getAllEpisodes()) {
     rootElem.append(makeEpisodeParaElm(episode))
@@ -35,6 +35,8 @@ function makeSearchPanel() {
   
   searchPanelDivElm.appendChild(searchInputElm);
   searchPanelDivElm.appendChild(SearchResultSpan);
+
+  return searchPanelDivElm;
 }
 
 function makeSearchResultSpan(episodeFound, totalEpisode) {
