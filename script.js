@@ -42,6 +42,8 @@ function makeSearchPanel() {
 function makeSearchResultSpan(episodeFound, totalEpisode) {
   let searchResultSpanElm = document.createElement('span');
   searchResultSpanElm.innerHTML = `Displaying ${episodeFound}/${totalEpisode} episodes`;
+
+  return searchResultSpanElm;
 }
 
 function makeEpisodeParaElm(episode) {
