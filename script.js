@@ -22,7 +22,7 @@ function getEpisodeInfo(episodeNo) {
 }
 
 function formatEpisodeCode(seasonNbr, episodeNbr) {
-  return + 'S' + (seasonNbr < 10 ? '0' : '') + seasonNbr + 'E' + (episodeNbr < 10 ? '0' : '') + episodeNbr ;
+  return 'S' + (seasonNbr < 10 ? '0' : '') + seasonNbr + 'E' + (episodeNbr < 10 ? '0' : '') + episodeNbr ;
 }
 function makeEpisodeParaElm(episode) {
   let episodeParaElm = document.createElement('p');
