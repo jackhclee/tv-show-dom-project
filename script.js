@@ -4,6 +4,8 @@ function setup() {
   const allEpisodes = getAllGOTEpisodes();
   makePageForEpisodes(allEpisodes);
 
+  makeSearchPanel();
+  
   const rootElem = document.getElementById("root");
 
   for (let episode of getAllEpisodes()) {
@@ -24,6 +26,22 @@ function getEpisodeInfo(episodeNo) {
 function formatEpisodeCode(seasonNbr, episodeNbr) {
   return 'S' + (seasonNbr < 10 ? '0' : '') + seasonNbr + 'E' + (episodeNbr < 10 ? '0' : '') + episodeNbr ;
 }
+
+function makeSearchPanel() {
+  let searchPanelDivElm = document.createElement('div');
+  let searchInputElm = document.createElement('input');
+  let allGOTEpisodes = getAllGOTEpisodes();
+  let SearchResultSpan = makeSearchResultSpan(allGOTEpisodes.length, allGOTEpisodes.length);
+  
+  searchPanelDivElm.appendChild(searchInputElm);
+  searchPanelDivElm.appendChild(SearchResultSpan);
+}
+
+function makeSearchResultSpan(episodeFound, totalEpisode) {
+  let searchResultSpanElm = document.createElement('span');
+  searchResultSpanElm.innerHTML = `Displaying ${episodeFound}/${totalEpisode} episodes`;
+}
+
 function makeEpisodeParaElm(episode) {
   let episodeParaElm = document.createElement('p');
 
