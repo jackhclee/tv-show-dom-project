@@ -34,11 +34,11 @@ function formatEpisodeCode(seasonNbr, episodeNbr) {
   return "S" + (seasonNbr < 10 ? "0" : "") + seasonNbr + "E" + (episodeNbr < 10 ? "0" : "") + episodeNbr ;
 }
 
-function displaySearchResult() {
-
+function updateSearchResult() {
   removeSearchResultPanel();
   document.getElementById('root').appendChild(makeSearchResultPanel(matchedEpisodes));
 }
+
 function makeSearchPanel() {
   let searchPanelDivElm = document.createElement("div");
   let searchInputElm = document.createElement("input");
@@ -59,7 +59,7 @@ function makeSearchPanel() {
     }
       console.table(matchedEpisodes);
       updateSearchResultStat(matchedEpisodes.length, getAllGOTEpisodes().length);
-      displaySearchResult();
+      updateSearchResult();
     evt.target.value = "";
   });
 
