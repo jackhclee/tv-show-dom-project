@@ -1,24 +1,32 @@
 //You can edit ALL of the code here
 
-let matchedEpisodes = getAllGOTEpisodes();
+// We use Promise here to make sure async functions executes one by one 
 
 function setup() {
 
-  const rootElem = document.getElementById("root");
+  // initLocalCaches is async so 
+  initLocalCaches()
+  .then((cache) => {
 
-  rootElem.appendChild(makeSearchPanel());
+    let matchedEpisodes = getAllGOTEpisodes();
 
-  rootElem.appendChild(makeSearchResultPanel(matchedEpisodes));
+    const rootElem = document.getElementById("root");
+
+    rootElem.appendChild(makeSearchPanel());
+
+    rootElem.appendChild(makeSearchResultPanel(matchedEpisodes));
+  })
+  .catch((error) => console.error(`Error within setup() ${error}`));
   
 }
 
 function makeEpisodeSelectElm(allEpisodes) {
-  let episodeSelectElm = document.createElement('select');
+  let episodeSelectElm = document.createElement("select");
 
   for (let episode of allEpisodes) {
-    let option = document.createElement('option');
-    option.setAttribute('value', episode.id);
-    option.innerText = formatEpisodeCode(episode.season, episode.number) + ' - ' + episode.name;
+    let option = document.createElement("option");
+    option.setAttribute("value", episode.id);
+    option.innerText = formatEpisodeCode(episode.season, episode.number) + " - " + episode.name;
     episodeSelectElm.append(option);
   }
   return episodeSelectElm;
@@ -48,7 +56,7 @@ function formatEpisodeCode(seasonNbr, episodeNbr) {
 
 function updateSearchResult() {
   removeSearchResultPanel();
-  document.getElementById('root').appendChild(makeSearchResultPanel(matchedEpisodes));
+  document.getElementById("root").appendChild(makeSearchResultPanel(matchedEpisodes));
 }
 
 function makeSearchPanel() {
@@ -57,7 +65,7 @@ function makeSearchPanel() {
 
   searchInputElm.addEventListener("change", (evt)=> {
     let searchWord = evt.target.value.toLowerCase().trim();
-    console.log(searchWord)
+    console.log(searchWord);
    
     if (searchWord !== "") {
       matchedEpisodes = getAllGOTEpisodes().filter(
@@ -86,13 +94,13 @@ function makeSearchPanel() {
 }
 
 function updateSearchResultStat(episodeFound, totalEpisode) {
-  document.getElementById('searchResultStat').innerHTML
+  document.getElementById("searchResultStat").innerHTML
   = `Displaying ${episodeFound}/${totalEpisode} episodes`;
 }
 
 function makeSearchResultStatSpan(episodeFound, totalEpisode) {
   let searchResultStatSpanElm = document.createElement("span");
-  searchResultStatSpanElm.setAttribute('id','searchResultStat')
+  searchResultStatSpanElm.setAttribute("id","searchResultStat");
   searchResultStatSpanElm.innerHTML = `Displaying ${episodeFound}/${totalEpisode} episodes`;
 
   return searchResultStatSpanElm;
