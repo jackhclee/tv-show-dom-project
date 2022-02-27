@@ -14,11 +14,13 @@ https://github.com/CodeYourFuture/tv-show-dom-project-solution
 
 ## Jack's Project Plan
 
-|  Task    |Est. Start|  Est.End |Act. Start| Act. End | Status | Remarks  |
-|----------|----------|----------|----------|----------|--------|----------|
-|  Setup   |2022-02-20|2022-02-26|2022-02-20| TBC      | Started|          |
-|  Lvl 100 |2022-02-20|2022-02-26|2022-02-20| TBC      | Started|          |
-|  Lvl 200 |2022-02-20|2022-02-26|2022-02-20| TBC      | Started|          |
+|  Task    |Est. Start|  Est.End |Act. Start|Act. End  | Status  | Remarks  |
+|----------|----------|----------|----------|----------|---------|----------|
+|  Setup   |2022-02-20|2022-02-26|2022-02-20|TBC       | Started |          |
+|  Lvl 100 |2022-02-20|2022-02-26|2022-02-20|2022-02-26| Done    |          |
+|  Lvl 200 |2022-02-20|2022-02-26|2022-02-20|2022-02-26| Done    |          |
+|  Lvl 300 |2022-02-27|2022-03-05|2022-02-27|2022-02-27| Done    |          |
+|  Lvl 350 |2022-02-27|2022-03-05|2022-02-27|2022-02-27| Done    |          |
 
 ## Project Structure
 
