@@ -12,6 +12,18 @@ function setup() {
   
 }
 
+function makeEpisodeSelectElm(allEpisodes) {
+  let episodeSelectElm = document.createElement('select');
+
+  for (let episode of allEpisodes) {
+    let option = document.createElement('option');
+    option.setAttribute('value', episode.id);
+    option.innerText = formatEpisodeCode(episode.season, episode.number) + ' - ' + episode.name;
+    episodeSelectElm.append(option);
+  }
+  return episodeSelectElm;
+}
+
 function makeSearchResultPanel(episodes) {
   const searchResultPanelElm = document.createElement("div");
   searchResultPanelElm.setAttribute("id","searchResultPanel");
@@ -66,6 +78,7 @@ function makeSearchPanel() {
   let allGOTEpisodes = getAllGOTEpisodes();
   let SearchResultSpan = makeSearchResultStatSpan(allGOTEpisodes.length, allGOTEpisodes.length);
   
+  searchPanelDivElm.appendChild(makeEpisodeSelectElm(allGOTEpisodes));
   searchPanelDivElm.appendChild(searchInputElm);
   searchPanelDivElm.appendChild(SearchResultSpan);
 
