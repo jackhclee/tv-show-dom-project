@@ -4,15 +4,19 @@
 
 function setup() {
 
-  // initLocalCaches is async so 
-  initLocalCaches()
+  // initLocalEpisodesCache is async so
+  //initLocalShowsCache();
+  initLocalEpisodesCache(localShowsCache[0].id)
   .then((cache) => {
 
-    let matchedEpisodes = getAllGOTEpisodes();
+    matchedEpisodes = localEpisodesCache["S" + localShowsCache[0].id];
+    console.log("lll");
 
     const rootElem = document.getElementById("root");
-
+    console.log("lll");
     rootElem.appendChild(makeSearchPanel());
+
+    console.log("lll");
 
     rootElem.appendChild(makeSearchResultPanel(matchedEpisodes));
   })
@@ -20,8 +24,42 @@ function setup() {
   
 }
 
+const showSelectElmId = "showSelectElmId";
+
+function makeShowSelectElm(allShows) {
+  let episodeSelectElm = document.createElement("select");
+  episodeSelectElm.setAttribute("id", showSelectElmId);
+
+  for (let show of allShows) {
+    let option = document.createElement("option");
+    option.setAttribute("value", show.id);
+    option.innerText = show.name + ' - ' + show.id;
+    episodeSelectElm.append(option);
+  }
+
+  // handle show selection change
+  episodeSelectElm.addEventListener("change", (evt) => {
+    console.log(`Show selection changed. Show ${evt.target.value} selected`);
+    console.dir(evt);
+    let showId = evt.target.value;
+    currentSelectedShowId = showId;
+    fetchEpisodes(showId)
+    .then((episodes) => {
+      removeEpisodeSelectElm();
+      document.getElementById(episodeSelectHarbourDivId).append(makeEpisodeSelectElm(episodes));
+      updateSearchResultStat(episodes.length, episodes.length);
+      updateSearchResult(episodes);
+    });
+  });
+  return episodeSelectElm;
+}
+
+const episodeSelectElmId = "episodeSelectElm";
+const episodeSelectHarbourDivId = "episodeSelectHarbourDivId";
+
 function makeEpisodeSelectElm(allEpisodes) {
   let episodeSelectElm = document.createElement("select");
+  episodeSelectElm.setAttribute("id", episodeSelectElmId);
 
   for (let episode of allEpisodes) {
     let option = document.createElement("option");
@@ -30,6 +68,10 @@ function makeEpisodeSelectElm(allEpisodes) {
     episodeSelectElm.append(option);
   }
   return episodeSelectElm;
+}
+
+function removeEpisodeSelectElm() {
+  document.getElementById(episodeSelectElmId).remove();
 }
 
 function makeSearchResultPanel(episodes) {
@@ -54,39 +96,61 @@ function formatEpisodeCode(seasonNbr, episodeNbr) {
   return "S" + (seasonNbr < 10 ? "0" : "") + seasonNbr + "E" + (episodeNbr < 10 ? "0" : "") + episodeNbr ;
 }
 
-function updateSearchResult() {
+function updateSearchResult(matchedEpisodes) {
   removeSearchResultPanel();
   document.getElementById("root").appendChild(makeSearchResultPanel(matchedEpisodes));
 }
 
+const searchPanel = "searchPanel";
+
+let currentSelectedShowId;
+
 function makeSearchPanel() {
   let searchPanelDivElm = document.createElement("div");
+  searchPanelDivElm.setAttribute("id", "searchPanel");
+
   let searchInputElm = document.createElement("input");
+
+  console.log("ABN");
+
+  currentSelectedShowId = localShowsCache[0].id;
+     
+  matchedEpisodes = localEpisodesCache["S" + currentSelectedShowId];
 
   searchInputElm.addEventListener("change", (evt)=> {
     let searchWord = evt.target.value.toLowerCase().trim();
-    console.log(searchWord);
-   
+    console.log(`searchWord is ${searchWord} for ${currentSelectedShowId}`);
     if (searchWord !== "") {
-      matchedEpisodes = getAllGOTEpisodes().filter(
+      matchedEpisodes = localEpisodesCache["S" + currentSelectedShowId].filter(
       episode => 
       (episode.name.toLowerCase().indexOf(searchWord) >=0 ||
       episode.summary.toLowerCase().indexOf(searchWord) >=0)
       
       );
     } else {
-      matchedEpisodes = getAllGOTEpisodes();
+      matchedEpisodes = localEpisodesCache["S" + currentSelectedShowId];
     }
-      console.table(matchedEpisodes);
-      updateSearchResultStat(matchedEpisodes.length, getAllGOTEpisodes().length);
-      updateSearchResult();
+    console.table(matchedEpisodes);
+    updateSearchResultStat(matchedEpisodes.length, localEpisodesCache["S" + currentSelectedShowId].length);
+    updateSearchResult(matchedEpisodes);
     evt.target.value = "";
   });
 
-  let allGOTEpisodes = getAllGOTEpisodes();
-  let SearchResultSpan = makeSearchResultStatSpan(allGOTEpisodes.length, allGOTEpisodes.length);
+  console.log("ABN");
+
+  let SearchResultSpan = makeSearchResultStatSpan(matchedEpisodes.length, matchedEpisodes.length);
   
-  searchPanelDivElm.appendChild(makeEpisodeSelectElm(allGOTEpisodes));
+  let episodeSelectHarbourDiv = document.createElement("div");
+  
+  console.log("138")
+
+  searchPanelDivElm.append(makeShowSelectElm(localShowsCache));
+
+  episodeSelectHarbourDiv.setAttribute("id", "episodeSelectHarbourDivId");
+  searchPanelDivElm.appendChild(episodeSelectHarbourDiv);
+  
+  episodeSelectHarbourDiv.appendChild(makeEpisodeSelectElm(matchedEpisodes));
+
   searchPanelDivElm.appendChild(searchInputElm);
   searchPanelDivElm.appendChild(SearchResultSpan);
 
@@ -116,7 +180,7 @@ function makeEpisodeParaElm(episode) {
   titleSpanElm.innerHTML = episode.name;
 
   let episodeImgElm = document.createElement("img");
-  episodeImgElm.src = episode.image.medium;
+  episode.image != null ? episodeImgElm.src = episode.image.medium : episodeImgElm.src = "https://static.tvmaze.com/images/tvm-header-logo.png";
 
   let synopsisElm = document.createElement("span");
   synopsisElm.innerHTML = episode.summary;
