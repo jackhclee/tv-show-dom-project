@@ -1,6 +1,23 @@
 //You can edit ALL of the code here
 
+function hideShowSelectionArea(hideShowSelection) {
+  if (hideShowSelection) {
+    document.getElementById(showProcessingAreaId).style.display = "none";
+    document.getElementById(episodeProcessingAreaId).style.display = "block";
+  } else {
+    document.getElementById(showProcessingAreaId).style.display = "block";
+    document.getElementById(episodeProcessingAreaId).style.display = "none";
+  }
+}
+
 // We use Promise here to make sure async functions executes one by one 
+const showSearchResultPanelHarbourId = "showSearchResultPanelHarbourId";
+
+const showProcessingAreaId = "showProcessingAreaId";
+
+const episodeProcessingAreaId = "episodeProcessingAreaId";
+
+const matchedShowSpanElmId = "matchedShowSpanElmId";
 
 function setup() {
 
@@ -13,12 +30,38 @@ function setup() {
     console.log("lll");
 
     const rootElem = document.getElementById("root");
-    console.log("lll");
-    rootElem.appendChild(makeSearchPanel());
+   
+    let showProcessingBanner = document.createElement("div")
+    showProcessingBanner.innerHTML = "SHOWS";
+    showProcessingBanner.classList.add("shows-banner");
+
+    rootElem.append(showProcessingBanner);
+
+    let showProcessingArea = document.createElement("div");
+    showProcessingArea.setAttribute("id", showProcessingAreaId);
+    rootElem.appendChild(showProcessingArea);
+
+    showProcessingArea.appendChild(makeShowSearchPanel());
+    let showSearchResultPanelHarbour = document.createElement("div");
+    showSearchResultPanelHarbour.setAttribute("id", showSearchResultPanelHarbourId);
+    showProcessingArea.appendChild(showSearchResultPanelHarbour);
+    showSearchResultPanelHarbour.appendChild(makeShowSearchResultPanel(localShowsCache));
+    
+    let episodeProcessingBanner = document.createElement("div")
+    episodeProcessingBanner.innerHTML = "EPISODES";
+    episodeProcessingBanner.classList.add("episodes-banner");
+
+    rootElem.append(episodeProcessingBanner);
+
+    let episodeProcessingArea = document.createElement("div");
+    episodeProcessingArea.setAttribute("id", episodeProcessingAreaId);
+    rootElem.appendChild(episodeProcessingArea);
+
+    episodeProcessingArea.appendChild(makeSearchPanel());
 
     console.log("lll");
 
-    rootElem.appendChild(makeSearchResultPanel(matchedEpisodes));
+    episodeProcessingArea.appendChild(makeSearchResultPanel(matchedEpisodes));
   })
   .catch((error) => console.error(`Error within setup() ${error}`));
   
@@ -26,32 +69,129 @@ function setup() {
 
 const showSelectElmId = "showSelectElmId";
 
+const showSearchResultDivId = "showSearchResultDivId";
+
+function makeShowSearchPanel() {
+  let showSearchPanelElm = document.createElement("div");
+
+  let showSearchInputElm = document.createElement("input");
+
+  showSearchInputElm.addEventListener("change", (evt) => {
+
+    let showSearchTerm = evt.target.value.toLowerCase();
+    console.log(`showSearch input changed to ${evt.target.value}`);
+
+    let matchedShows = localShowsCache.filter(
+      (show) => {
+        return (
+          show.name.toLowerCase().indexOf(showSearchTerm) >= 0 
+          || show.summary.toLowerCase().indexOf(showSearchTerm) >= 0 
+          || show.genres.join(" ").toLowerCase().indexOf(showSearchTerm) >= 0 
+        );
+      }
+    )
+
+    updateShowSearchResultPanel(matchedShows);
+    document.getElementById(matchedShowSpanElmId).innerHTML = `found ${matchedShows.length} shows`;
+    document.getElementById(showSelectElmId).remove();
+    showSearchPanelElm.append(makeShowSelectElm(matchedShows));
+    evt.target = "";
+  });
+
+  let matchedShowSpanElm = document.createElement("span");
+  matchedShowSpanElm.setAttribute("id","matchedShowSpanElmId");
+  matchedShowSpanElm.innerHTML = `found ${localShowsCache.length} shows`;
+  showSearchPanelElm.append(showSearchInputElm);
+  showSearchPanelElm.append(matchedShowSpanElm);
+  showSearchPanelElm.append(makeShowSelectElm(localShowsCache));
+
+  return showSearchPanelElm;
+}
+
+function updateShowSelectControl(shows) {
+  
+
+}
+
+function updateShowSearchResultPanel(shows) {
+  console.log(`updateShowSearchResultPanel ${shows.length}`);
+
+  document.getElementById(showSearchResultDivId).remove();
+
+
+  document.getElementById(showSearchResultPanelHarbourId).append(makeShowSearchResultPanel(shows));
+}
+
+function makeShowSearchResultPanel(shows) {
+  console.table(shows);
+  let showSearchResultDiv = document.createElement("div");
+  showSearchResultDiv.setAttribute("id", showSearchResultDivId);
+
+  for (let show of shows) {
+    let showDiv = document.createElement("div");
+
+    let showNameSpan = document.createElement("span");
+    showNameSpan.innerHTML = show.name;
+
+    let showSummarySpan = document.createElement("span");
+    showSummarySpan.innerHTML = show.summary;
+
+    let showImage = document.createElement("img");
+    show.image != null ? showImage.src = show.image.medium : showImage.src = "https://static.tvmaze.com/images/tvm-header-logo.png";
+
+    let showMiscSpan = document.createElement("span");
+    showMiscSpan.innerHTML
+     = `${show.genres} / ${show.status} / ${show.rating.average} / ${show.runtime}`;
+
+    showDiv.append(showImage);
+    showDiv.append(showNameSpan);
+  
+    showDiv.append(showSummarySpan);
+    showDiv.append(showMiscSpan);
+
+    showDiv.addEventListener("click", (evt) => {
+      console.log(`clicked show showId ${show.id}`);
+      handleShowSelectionChange(show.id);
+      hideShowSelectionArea(true);
+    });
+
+    showSearchResultDiv.append(showDiv);
+  }
+
+  return showSearchResultDiv;
+}
+
 function makeShowSelectElm(allShows) {
-  let episodeSelectElm = document.createElement("select");
-  episodeSelectElm.setAttribute("id", showSelectElmId);
+  let showSelectElm = document.createElement("select");
+  showSelectElm.setAttribute("id", showSelectElmId);
 
   for (let show of allShows) {
     let option = document.createElement("option");
     option.setAttribute("value", show.id);
     option.innerText = show.name + ' - ' + show.id;
-    episodeSelectElm.append(option);
+    showSelectElm.append(option);
   }
 
   // handle show selection change
-  episodeSelectElm.addEventListener("change", (evt) => {
+  showSelectElm.addEventListener("change", (evt) => {
     console.log(`Show selection changed. Show ${evt.target.value} selected`);
     console.dir(evt);
     let showId = evt.target.value;
-    currentSelectedShowId = showId;
-    fetchEpisodes(showId)
-    .then((episodes) => {
-      removeEpisodeSelectElm();
-      document.getElementById(episodeSelectHarbourDivId).append(makeEpisodeSelectElm(episodes));
-      updateSearchResultStat(episodes.length, episodes.length);
-      updateSearchResult(episodes);
-    });
+    handleShowSelectionChange(showId);
+    hideShowSelectionArea(true);
   });
-  return episodeSelectElm;
+  return showSelectElm;
+}
+
+function handleShowSelectionChange(showId) {
+  currentSelectedShowId = showId;
+  fetchEpisodes(showId)
+  .then((episodes) => {
+    removeEpisodeSelectElm();
+    document.getElementById(episodeSelectHarbourDivId).append(makeEpisodeSelectElm(episodes));
+    updateSearchResultStat(episodes.length, episodes.length);
+    updateSearchResult(episodes);
+  });
 }
 
 const episodeSelectElmId = "episodeSelectElm";
@@ -67,6 +207,16 @@ function makeEpisodeSelectElm(allEpisodes) {
     option.innerText = formatEpisodeCode(episode.season, episode.number) + " - " + episode.name;
     episodeSelectElm.append(option);
   }
+
+  episodeSelectElm.addEventListener("change", () => {
+    console.log(`episodeSelectElm changed to ${episodeSelectElm.value}`);
+    console.log(`currentSelectedShowId ${currentSelectedShowId}`);
+
+    matchedEpisodes = localEpisodesCache["S" + currentSelectedShowId].filter((episode) => episode.id == episodeSelectElm.value);
+    updateSearchResultStat(matchedEpisodes.length, localEpisodesCache["S" + currentSelectedShowId].length);
+    updateSearchResult(matchedEpisodes);
+  });
+
   return episodeSelectElm;
 }
 
@@ -142,9 +292,9 @@ function makeSearchPanel() {
   
   let episodeSelectHarbourDiv = document.createElement("div");
   
-  console.log("138")
+  console.log("138");
 
-  searchPanelDivElm.append(makeShowSelectElm(localShowsCache));
+  //searchPanelDivElm.append(makeShowSelectElm(localShowsCache));
 
   episodeSelectHarbourDiv.setAttribute("id", "episodeSelectHarbourDivId");
   searchPanelDivElm.appendChild(episodeSelectHarbourDiv);
@@ -154,7 +304,19 @@ function makeSearchPanel() {
   searchPanelDivElm.appendChild(searchInputElm);
   searchPanelDivElm.appendChild(SearchResultSpan);
 
+  searchPanelDivElm.appendChild(makeResetButton());
+
   return searchPanelDivElm;
+}
+
+function makeResetButton() {
+  let resetBtn = document.createElement("button");
+  resetBtn.innerText = "reset";
+  resetBtn.addEventListener("click", () => {
+    console.log("resetBtn clicked");
+    hideShowSelectionArea(false);
+  });
+  return resetBtn;
 }
 
 function updateSearchResultStat(episodeFound, totalEpisode) {

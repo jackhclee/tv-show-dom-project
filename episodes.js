@@ -47,7 +47,7 @@ function fetchEpisodes(showId) {
   .then((jsonObj) => {
     console.log(`No of Episodes retrieved for show ${showId} is ${jsonObj.length}`);
     console.table(jsonObj);
-    localEpisodesCache["S"+ showId] = jsonObj
+    localEpisodesCache["S"+ showId] = jsonObj;
     return jsonObj;
   })
   .catch((error) => {

@@ -5,3 +5,28 @@
 .important {
   color: red;
 }
+
+.show {
+  display: block;
+}
+
+.hide {
+  display: none;
+}
+
+.shows-banner {
+  background-color: blueviolet;
+  color: white;
+  font-size: 3em;
+  border: 2em;
+  border-color: white;
+}
+
+.episodes-banner {
+  background-color: red;
+  color: white;
+  font-size: 3em;
+  border: 2em;
+  border-color: white;
+}
+
