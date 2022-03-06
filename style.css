@@ -14,15 +14,7 @@
   display: none;
 }
 
-.show-entry {
-  display: grid;
-  grid: 300px auto / 220px auto;
-}
 
-.episode-entry {
-  display: grid;
-  grid: 150px / 250px auto;
-}
 
 .show-name {
   font-size: 2em;
@@ -38,6 +30,15 @@
   border-color: white;
 }
 
+.show-entry:nth-child(even) {
+  background-color: #ccc;
+}
+
+.show-entry {
+  display: grid;
+  grid: 300px auto / 220px auto;
+}
+
 .episodes-banner {
   background-color: red;
   color: white;
@@ -51,8 +52,10 @@
   font-weight: 700;
 }
 
-.show-entry:nth-child(even) {
-  background-color: #ccc;
+.episode-entry {
+  display: grid;
+  grid: 150px / 250px auto;
+  overflow: hidden;
 }
 
 .episode-entry:nth-child(even) {
