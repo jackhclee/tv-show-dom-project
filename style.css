@@ -14,8 +14,6 @@
   display: none;
 }
 
-
-
 .show-name {
   font-size: 2em;
   font-style: italic;
@@ -24,6 +22,7 @@
 
 .shows-banner {
   background-color: blueviolet;
+  font-family: 'Segment7Standard';
   color: white;
   font-size: 3em;
   border: 2em;
@@ -42,6 +41,7 @@
 
 .episodes-banner {
   background-color: red;
+  font-family: 'Segment7Standard';
   color: white;
   font-size: 3em;
   border: 2em;
