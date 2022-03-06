@@ -346,12 +346,15 @@ function makeEpisodeSearchResultStatSpan(episodeFound, totalEpisode) {
 }
 
 function makeEpisodeParaElm(episode) {
-  let episodeParaElm = document.createElement("p");
+  let episodeDivElm = document.createElement("div");
+  episodeDivElm.classList.add("episode-entry");
 
   let episodeNumberSpanElm = document.createElement("span");
   episodeNumberSpanElm.innerHTML = formatEpisodeCode(episode.season, episode.number);
+  episodeNumberSpanElm.classList.add("episode-heading");
 
   let titleSpanElm = document.createElement("span");
+  titleSpanElm.classList.add("episode-heading");
   titleSpanElm.innerHTML = episode.name;
 
   let episodeImgElm = document.createElement("img");
@@ -360,11 +363,16 @@ function makeEpisodeParaElm(episode) {
   let synopsisElm = document.createElement("span");
   synopsisElm.innerHTML = episode.summary;
 
-  episodeParaElm.appendChild(episodeNumberSpanElm);
-  episodeParaElm.appendChild(titleSpanElm);
-  episodeParaElm.appendChild(episodeImgElm);
-  episodeParaElm.appendChild(synopsisElm);
+  episodeDivElm.appendChild(episodeImgElm);
 
-  return episodeParaElm;
+  let episodeDetailDiv = document.createElement("div");
+
+  episodeDetailDiv.appendChild(episodeNumberSpanElm);
+  episodeDetailDiv.appendChild(titleSpanElm);
+  episodeDetailDiv.appendChild(synopsisElm);
+
+  episodeDivElm.append(episodeDetailDiv);
+
+  return episodeDivElm;
 }
 window.onload = setup;
