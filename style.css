@@ -37,6 +37,7 @@
 .show-entry {
   display: grid;
   grid: 300px auto / 220px auto;
+  overflow: hidden;
 }
 
 .episodes-banner {
