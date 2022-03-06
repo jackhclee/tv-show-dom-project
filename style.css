@@ -1,5 +1,5 @@
 #root {
-  color: red;
+  color: black;
 }
 
 .important {
@@ -12,6 +12,17 @@
 
 .hide {
   display: none;
+}
+
+.show-entry {
+  display: grid;
+  grid: 300px auto / 220px auto;
+}
+
+.show-name {
+  font-size: 2em;
+  font-style: italic;
+  font-weight: 700;
 }
 
 .shows-banner {
@@ -28,6 +39,10 @@
   font-size: 3em;
   border: 2em;
   border-color: white;
+}
+
+.show-entry:nth-child(even) {
+  background-color: #ccc;
 }
 
 #episodeSearchResultPanelId p:nth-child(even) {

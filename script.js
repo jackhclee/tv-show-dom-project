@@ -139,8 +139,10 @@ function makeShowSearchResultPanel(shows) {
 
   for (let show of shows) {
     let showDiv = document.createElement("div");
+    showDiv.classList.add("show-entry");
 
     let showNameSpan = document.createElement("span");
+    showNameSpan.classList.add("show-name");
     showNameSpan.innerHTML = show.name;
 
     let showSummarySpan = document.createElement("span");
@@ -154,10 +156,15 @@ function makeShowSearchResultPanel(shows) {
      = `${show.genres} / ${show.status} / ${show.rating.average} / ${show.runtime}`;
 
     showDiv.append(showImage);
-    showDiv.append(showNameSpan);
+
+    let showDetailDiv = document.createElement("div");
+
+    showDetailDiv.append(showNameSpan);
   
-    showDiv.append(showSummarySpan);
-    showDiv.append(showMiscSpan);
+    showDetailDiv.append(showSummarySpan);
+    showDetailDiv.append(showMiscSpan);
+
+    showDiv.append(showDetailDiv);
 
     showDiv.addEventListener("click", (evt) => {
       console.log(`clicked show showId ${show.id}`);
