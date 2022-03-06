@@ -4,15 +4,15 @@
 //specifically: https://api.tvmaze.com/shows
 
 let localShowsCache = getAllShows();
-localShowsCache.sort((a,b) => {
-   if(a.name > b.name) {
-     return 1;
-   } else if (a.name < b.name) {
-     return -1;
-   } else {
-     return 0;
-   }
-  })
+// localShowsCache.sort((a,b) => {
+//    if(a.name > b.name) {
+//      return 1;
+//    } else if (a.name < b.name) {
+//      return -1;
+//    } else {
+//      return 0;
+//    }
+//   })
 
 async function initLocalShowsCache() {
   console.log(`No of shows from getAllShows() ${getAllShows().length}`);
@@ -16451,7 +16451,15 @@ function getAllShows() {
       }
     }
 
-  ].sort((a,b) => a.name < b.name);
+  ].sort((a,b) => {
+    if(a.name > b.name) {
+      return 1;
+    } else if (a.name < b.name) {
+      return -1;
+    } else {
+      return 0;
+    }
+   });
 
 }
 

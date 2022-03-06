@@ -30,3 +30,7 @@
   border-color: white;
 }
 
+#episodeSearchResultPanelId p:nth-child(even) {
+  background-color: #ccc;
+}
+
