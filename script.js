@@ -1,4 +1,32 @@
 //You can edit ALL of the code here
+/* global localShowsCache, localEpisodesCache */
+// We use Promise here to make sure async functions executes one by one 
+
+const showProcessingAreaId = "showProcessingAreaId";
+
+const showSearchPanelId = "showSearchPanelId";
+
+const showSelectControlId = "showSelectControlId";
+
+const showSearchResultPanelHarbourId = "showSearchResultPanelHarbourId";
+
+const showSearchResultDivId = "showSearchResultDivId";
+
+const matchedShowSpanElmId = "matchedShowSpanElmId";
+
+const episodeProcessingAreaId = "episodeProcessingAreaId";
+
+const episodeSearchPanelId = "episodeSearchPanelId";
+
+const episodeSelectHarbourDivId = "episodeSelectHarbourDivId";
+
+const episodeSelectControlId = "episodeSelectControl";
+
+const episodeSearchResultPanelId = "episodeSearchResultPanelId";
+
+const episodeSearchResultStat = "episodeSearchResultStat";
+
+let currentSelectedShowId = 0;
 
 function hideShowSelectionArea(hideShowSelection) {
   if (hideShowSelection) {
@@ -10,28 +38,17 @@ function hideShowSelectionArea(hideShowSelection) {
   }
 }
 
-// We use Promise here to make sure async functions executes one by one 
-const showSearchResultPanelHarbourId = "showSearchResultPanelHarbourId";
-
-const showProcessingAreaId = "showProcessingAreaId";
-
-const episodeProcessingAreaId = "episodeProcessingAreaId";
-
-const matchedShowSpanElmId = "matchedShowSpanElmId";
-
 function setup() {
 
-  // initLocalEpisodesCache is async so
-  //initLocalShowsCache();
+  // initLocalEpisodesCache is async
   initLocalEpisodesCache(localShowsCache[0].id)
-  .then((cache) => {
+  .then(() => {
 
     matchedEpisodes = localEpisodesCache["S" + localShowsCache[0].id];
-    console.log("lll");
 
     const rootElem = document.getElementById("root");
    
-    let showProcessingBanner = document.createElement("div")
+    let showProcessingBanner = document.createElement("div");
     showProcessingBanner.innerHTML = "SHOWS";
     showProcessingBanner.classList.add("shows-banner");
 
@@ -47,7 +64,7 @@ function setup() {
     showProcessingArea.appendChild(showSearchResultPanelHarbour);
     showSearchResultPanelHarbour.appendChild(makeShowSearchResultPanel(localShowsCache));
     
-    let episodeProcessingBanner = document.createElement("div")
+    let episodeProcessingBanner = document.createElement("div");
     episodeProcessingBanner.innerHTML = "EPISODES";
     episodeProcessingBanner.classList.add("episodes-banner");
 
@@ -57,22 +74,20 @@ function setup() {
     episodeProcessingArea.setAttribute("id", episodeProcessingAreaId);
     rootElem.appendChild(episodeProcessingArea);
 
-    episodeProcessingArea.appendChild(makeSearchPanel());
+    episodeProcessingArea.appendChild(makeEpisodeSearchPanel());
 
-    console.log("lll");
+    episodeProcessingArea.appendChild(makeEpisodeSearchResultPanel(matchedEpisodes));
 
-    episodeProcessingArea.appendChild(makeSearchResultPanel(matchedEpisodes));
+    hideShowSelectionArea(false);
+
   })
   .catch((error) => console.error(`Error within setup() ${error}`));
   
 }
 
-const showSelectElmId = "showSelectElmId";
-
-const showSearchResultDivId = "showSearchResultDivId";
-
 function makeShowSearchPanel() {
   let showSearchPanelElm = document.createElement("div");
+  showSearchPanelElm.setAttribute("id", showSearchPanelId);
 
   let showSearchInputElm = document.createElement("input");
 
@@ -89,21 +104,25 @@ function makeShowSearchPanel() {
           || show.genres.join(" ").toLowerCase().indexOf(showSearchTerm) >= 0 
         );
       }
-    )
+    );
 
     updateShowSearchResultPanel(matchedShows);
     document.getElementById(matchedShowSpanElmId).innerHTML = `found ${matchedShows.length} shows`;
-    document.getElementById(showSelectElmId).remove();
-    showSearchPanelElm.append(makeShowSelectElm(matchedShows));
+    document.getElementById(showSelectControlId).remove();
+    showSearchPanelElm.append(makeShowSelectControl(matchedShows));
     evt.target = "";
   });
 
   let matchedShowSpanElm = document.createElement("span");
   matchedShowSpanElm.setAttribute("id","matchedShowSpanElmId");
   matchedShowSpanElm.innerHTML = `found ${localShowsCache.length} shows`;
+
+  let inputHint = document.createElement("span");
+  inputHint = "Enter search term to search ";
+  showSearchPanelElm.append(inputHint);
   showSearchPanelElm.append(showSearchInputElm);
   showSearchPanelElm.append(matchedShowSpanElm);
-  showSearchPanelElm.append(makeShowSelectElm(localShowsCache));
+  showSearchPanelElm.append(makeShowSelectControl(localShowsCache));
 
   return showSearchPanelElm;
 }
@@ -111,15 +130,6 @@ function makeShowSearchPanel() {
 function updateShowSelectControl(shows) {
   
 
-}
-
-function updateShowSearchResultPanel(shows) {
-  console.log(`updateShowSearchResultPanel ${shows.length}`);
-
-  document.getElementById(showSearchResultDivId).remove();
-
-
-  document.getElementById(showSearchResultPanelHarbourId).append(makeShowSearchResultPanel(shows));
 }
 
 function makeShowSearchResultPanel(shows) {
@@ -161,14 +171,24 @@ function makeShowSearchResultPanel(shows) {
   return showSearchResultDiv;
 }
 
-function makeShowSelectElm(allShows) {
+function updateShowSearchResultPanel(shows) {
+  console.log(`updateShowSearchResultPanel ${shows.length}`);
+
+  document.getElementById(showSearchResultDivId).remove();
+
+
+  document.getElementById(showSearchResultPanelHarbourId).append(makeShowSearchResultPanel(shows));
+}
+
+
+function makeShowSelectControl(allShows) {
   let showSelectElm = document.createElement("select");
-  showSelectElm.setAttribute("id", showSelectElmId);
+  showSelectElm.setAttribute("id", showSelectControlId);
 
   for (let show of allShows) {
     let option = document.createElement("option");
     option.setAttribute("value", show.id);
-    option.innerText = show.name + ' - ' + show.id;
+    option.innerText = show.name + " - " + show.id;
     showSelectElm.append(option);
   }
 
@@ -187,19 +207,16 @@ function handleShowSelectionChange(showId) {
   currentSelectedShowId = showId;
   fetchEpisodes(showId)
   .then((episodes) => {
-    removeEpisodeSelectElm();
-    document.getElementById(episodeSelectHarbourDivId).append(makeEpisodeSelectElm(episodes));
-    updateSearchResultStat(episodes.length, episodes.length);
-    updateSearchResult(episodes);
+    removeEpisodeSelectControl();
+    document.getElementById(episodeSelectHarbourDivId).append(makeEpisodeSelectControl(episodes));
+    updateEpisodeSearchResultStat(episodes.length, episodes.length);
+    updateEpisodeSearchResultPanel(episodes);
   });
 }
 
-const episodeSelectElmId = "episodeSelectElm";
-const episodeSelectHarbourDivId = "episodeSelectHarbourDivId";
-
-function makeEpisodeSelectElm(allEpisodes) {
+function makeEpisodeSelectControl(allEpisodes) {
   let episodeSelectElm = document.createElement("select");
-  episodeSelectElm.setAttribute("id", episodeSelectElmId);
+  episodeSelectElm.setAttribute("id", episodeSelectControlId);
 
   for (let episode of allEpisodes) {
     let option = document.createElement("option");
@@ -213,28 +230,28 @@ function makeEpisodeSelectElm(allEpisodes) {
     console.log(`currentSelectedShowId ${currentSelectedShowId}`);
 
     matchedEpisodes = localEpisodesCache["S" + currentSelectedShowId].filter((episode) => episode.id == episodeSelectElm.value);
-    updateSearchResultStat(matchedEpisodes.length, localEpisodesCache["S" + currentSelectedShowId].length);
-    updateSearchResult(matchedEpisodes);
+    updateEpisodeSearchResultStat(matchedEpisodes.length, localEpisodesCache["S" + currentSelectedShowId].length);
+    updateEpisodeSearchResultPanel(matchedEpisodes);
   });
 
   return episodeSelectElm;
 }
 
-function removeEpisodeSelectElm() {
-  document.getElementById(episodeSelectElmId).remove();
+function removeEpisodeSelectControl() {
+  document.getElementById(episodeSelectControlId).remove();
 }
 
-function makeSearchResultPanel(episodes) {
+function makeEpisodeSearchResultPanel(episodes) {
   const searchResultPanelElm = document.createElement("div");
-  searchResultPanelElm.setAttribute("id","searchResultPanel");
+  searchResultPanelElm.setAttribute("id",episodeSearchResultPanelId);
   for (let episode of episodes) {
     searchResultPanelElm.append(makeEpisodeParaElm(episode));
   }
   return searchResultPanelElm;
 }
 
-function removeSearchResultPanel() {
-  document.getElementById("searchResultPanel").remove();
+function removeEpisodeSearchResultPanel() {
+  document.getElementById(episodeSearchResultPanelId).remove();
 }
 
 function getEpisodeInfo(episodeNo) {
@@ -246,22 +263,11 @@ function formatEpisodeCode(seasonNbr, episodeNbr) {
   return "S" + (seasonNbr < 10 ? "0" : "") + seasonNbr + "E" + (episodeNbr < 10 ? "0" : "") + episodeNbr ;
 }
 
-function updateSearchResult(matchedEpisodes) {
-  removeSearchResultPanel();
-  document.getElementById("root").appendChild(makeSearchResultPanel(matchedEpisodes));
-}
-
-const searchPanel = "searchPanel";
-
-let currentSelectedShowId;
-
-function makeSearchPanel() {
+function makeEpisodeSearchPanel() {
   let searchPanelDivElm = document.createElement("div");
-  searchPanelDivElm.setAttribute("id", "searchPanel");
+  searchPanelDivElm.setAttribute("id", episodeSearchPanelId);
 
   let searchInputElm = document.createElement("input");
-
-  console.log("ABN");
 
   currentSelectedShowId = localShowsCache[0].id;
      
@@ -281,25 +287,21 @@ function makeSearchPanel() {
       matchedEpisodes = localEpisodesCache["S" + currentSelectedShowId];
     }
     console.table(matchedEpisodes);
-    updateSearchResultStat(matchedEpisodes.length, localEpisodesCache["S" + currentSelectedShowId].length);
-    updateSearchResult(matchedEpisodes);
+    updateEpisodeSearchResultStat(matchedEpisodes.length, localEpisodesCache["S" + currentSelectedShowId].length);
+    updateEpisodeSearchResultPanel(matchedEpisodes);
     evt.target.value = "";
   });
 
-  console.log("ABN");
-
-  let SearchResultSpan = makeSearchResultStatSpan(matchedEpisodes.length, matchedEpisodes.length);
+  let SearchResultSpan = makeEpisodeSearchResultStatSpan(matchedEpisodes.length, matchedEpisodes.length);
   
   let episodeSelectHarbourDiv = document.createElement("div");
-  
-  console.log("138");
 
   //searchPanelDivElm.append(makeShowSelectElm(localShowsCache));
 
   episodeSelectHarbourDiv.setAttribute("id", "episodeSelectHarbourDivId");
   searchPanelDivElm.appendChild(episodeSelectHarbourDiv);
   
-  episodeSelectHarbourDiv.appendChild(makeEpisodeSelectElm(matchedEpisodes));
+  episodeSelectHarbourDiv.appendChild(makeEpisodeSelectControl(matchedEpisodes));
 
   searchPanelDivElm.appendChild(searchInputElm);
   searchPanelDivElm.appendChild(SearchResultSpan);
@@ -311,7 +313,7 @@ function makeSearchPanel() {
 
 function makeResetButton() {
   let resetBtn = document.createElement("button");
-  resetBtn.innerText = "reset";
+  resetBtn.innerText = "Go back and search more shows";
   resetBtn.addEventListener("click", () => {
     console.log("resetBtn clicked");
     hideShowSelectionArea(false);
@@ -319,16 +321,20 @@ function makeResetButton() {
   return resetBtn;
 }
 
-function updateSearchResultStat(episodeFound, totalEpisode) {
-  document.getElementById("searchResultStat").innerHTML
+function updateEpisodeSearchResultPanel(matchedEpisodes) {
+  removeEpisodeSearchResultPanel();
+  document.getElementById(episodeProcessingAreaId).appendChild(makeEpisodeSearchResultPanel(matchedEpisodes));
+}
+
+function updateEpisodeSearchResultStat(episodeFound, totalEpisode) {
+  document.getElementById(episodeSearchResultStat).innerHTML
   = `Displaying ${episodeFound}/${totalEpisode} episodes`;
 }
 
-function makeSearchResultStatSpan(episodeFound, totalEpisode) {
+function makeEpisodeSearchResultStatSpan(episodeFound, totalEpisode) {
   let searchResultStatSpanElm = document.createElement("span");
-  searchResultStatSpanElm.setAttribute("id","searchResultStat");
+  searchResultStatSpanElm.setAttribute("id",episodeSearchResultStat);
   searchResultStatSpanElm.innerHTML = `Displaying ${episodeFound}/${totalEpisode} episodes`;
-
   return searchResultStatSpanElm;
 }
 
