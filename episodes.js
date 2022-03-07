@@ -20,11 +20,16 @@ async function initLocalEpisodesCache(showId) {
       return response.json();
     })
     .then((jsonObj) => {
+      console.log(jsonObj);
       localEpisodesCache[cacheId] = jsonObj;
       console.log(`${localEpisodesCache[cacheId].length} episodes retrieved at ${new Date()}`);
       return localEpisodesCache;
     })
-    .catch((error)=> console.error(error));
+    .catch((error)=> {
+      console.error(error);
+      localEpisodesCache[cacheId] = [{name: "1234"}];
+      return localEpisodesCache;
+    });
   }
 }
 
@@ -42,11 +47,28 @@ function fetchEpisodes(showId) {
   const episodeEndpoint = `https://api.tvmaze.com/shows/${showId}/episodes`; 
   return fetch(episodeEndpoint)
   .then((response) => {
-    return response.json();
+    if (response.ok) {
+      return response.json();
+    } else {
+      return null;
+    }
   })
   .then((jsonObj) => {
-    console.log(`No of Episodes retrieved for show ${showId} is ${jsonObj.length}`);
-    console.table(jsonObj);
+    if(jsonObj == null) {
+      console.error(`No episode information available for show ${showId}`);
+      jsonObj = [
+        {
+        id: 999
+        , season: 0
+        , number: 0
+        , name: "No episode information available"
+        , summary: "No summary information available"
+        }
+      ];
+    } else {
+      console.log(`No of Episodes retrieved for show ${showId} is ${jsonObj.length}`);
+      console.table(jsonObj);
+    }
     localEpisodesCache["S"+ showId] = jsonObj;
     return jsonObj;
   })
